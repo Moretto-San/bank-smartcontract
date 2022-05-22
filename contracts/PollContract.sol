@@ -6,14 +6,14 @@ contract Poll {
     address public pollOwner;
     string public pollName;
     string[] private pollItens;
-    int[] private pollItensVotes;
+    uint256[] private pollItensVotes;
     address[] private voters;
 
     constructor() {
         pollOwner = msg.sender;
     }
 
-    function setPoolName(string memory _name) external {
+    function setPollName(string memory _name) external {
         require(
             msg.sender == pollOwner,
             "You must be the owner of the poll to insert poll itens"
@@ -21,7 +21,7 @@ contract Poll {
         pollName = _name;
     }
 
-    function includePoolItem(string memory _item) external {
+    function includePollItem(string memory _item) external {
         require(
             msg.sender == pollOwner,
             "You must be the owner of the poll to insert poll itens"
@@ -36,8 +36,16 @@ contract Poll {
         pollItensVotes.push(0);
     }
 
-    function getPollItens() external view returns (string[] memory) {
-        return pollItens;
+    function getPollItem(uint256 _i) external view returns (string memory) {   
+        return pollItens[_i];
+    }
+
+    function getPollItemVotes(uint256 _i) external view returns (uint256) {   
+        return pollItensVotes[_i];
+    }
+
+    function getPollItemLength() external view returns (uint256) {   
+        return pollItens.length;
     }
 
     function voteItem(string memory _item) public payable {
@@ -57,10 +65,6 @@ contract Poll {
         }
 
         voters.push(msg.sender);
-    }
-
-    function getPollItemVotes() external view returns (int[] memory) {
-        return pollItensVotes;
     }
 
     function alreadyVoted(address _address)internal view returns (bool){
